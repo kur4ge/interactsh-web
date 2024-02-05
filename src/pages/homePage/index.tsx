@@ -24,7 +24,8 @@ import {
   clearIntervals,
   register,
 } from "lib";
-import { notifyTelegram, notifySlack, notifyDiscord } from "lib/notify";
+import { notifyTelegram, notifySlack, notifyDiscord, notifyLark } from "lib/notify";
+import processLarkData from "lib/notify/lark";
 import Data from "lib/types/data";
 import { StoredData } from "lib/types/storedData";
 import Tab from "lib/types/tab";
@@ -36,6 +37,7 @@ import TabSwitcher from "../../components/tabSwitcher";
 import { writeStoredData, getStoredData, defaultStoredData } from "../../lib/localStorage";
 import RequestDetailsWrapper from "./requestDetailsWrapper";
 import RequestsTableWrapper from "./requestsTableWrapper";
+
 
 
 const HomePage = () => {
@@ -218,11 +220,12 @@ const HomePage = () => {
             return {
               slack: `[${item['full-id']}] Received ${item.protocol.toUpperCase()} interaction from \n <https://ipinfo.io/${item['remote-address']}|${item['remote-address']}> at ${format(new Date(item.timestamp), "yyyy-MM-dd_hh:mm:ss")}`,
               discord: `[${item['full-id']}] Received ${item.protocol.toUpperCase()} interaction from \n [${item['remote-address']}](https://ipinfo.io/${item['remote-address']}) at ${format(new Date(item.timestamp), "yyyy-MM-dd_hh:mm:ss")}`,
+              lark:processLarkData(item),
             }
           })
           storedData.slack.enabled && notifySlack(formattedString, storedData.slack.hookKey, storedData.slack.channel)
           storedData.discord.enabled && notifyDiscord(formattedString, storedData.discord.webhook)
-
+          storedData.lark.enabled && notifyLark(formattedString, storedData.lark.webhook)
           const combinedData: Data[] = data.concat(processedData);
 
           setStoredData({

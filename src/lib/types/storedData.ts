@@ -6,6 +6,7 @@ import { ThemeName } from "theme";
 import Data from "./data";
 import Discord from "./discord";
 import Filter from "./filter";
+import Lark from "./lark";
 import Slack from "./slack";
 import Tab from "./tab";
 import Telegram from "./telegram";
@@ -33,6 +34,7 @@ export const StoredData_ = summon((F) =>
       telegram: Telegram(F),
       slack: Slack(F),
       discord: Discord(F),
+      lark: Lark(F),
       selectedTab: Tab(F),
       tabs: F.array(Tab(F)),
       data: F.array(Data(F)),

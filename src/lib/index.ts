@@ -217,6 +217,10 @@ export const register = (
             webhook: '',
             channel: '',
           },
+          lark: {
+            enabled: false,
+            webhook: '',
+          },
           tabs: tabData,
           selectedTab: tabData[0],
           data: [],

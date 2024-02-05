@@ -22,6 +22,7 @@ const NotificationsPopup = ({ handleCloseDialog }: NotificationsPopupP) => {
     telegram: data.telegram,
     slack: data.slack,
     discord: data.discord,
+    lark: data.lark,
   });
 
   const handleTelegramConfirm = () => {
@@ -57,6 +58,17 @@ const NotificationsPopup = ({ handleCloseDialog }: NotificationsPopupP) => {
     }, 500);
   };
 
+  const handleLarkConfirm = () => {
+    setIsLoading(true);
+    const currentStoredData = getStoredData();
+    setTimeout(() => {
+      localStorage.clear();
+      writeStoredData({ ...currentStoredData, lark: inputData.lark });
+      setInputData({ ...inputData });
+      setIsLoading(false);
+    }, 500);
+  };
+
   const handleInput = (e: any) => {
     if (e.target.id === "telegram_bot_token") {
       setInputData({ ...inputData, telegram: { ...inputData.telegram, botToken: e.target.value } });
@@ -70,6 +82,8 @@ const NotificationsPopup = ({ handleCloseDialog }: NotificationsPopupP) => {
       setInputData({ ...inputData, discord: { ...inputData.discord, webhook: e.target.value } });
     } else if (e.target.id === "discord_channel") {
       setInputData({ ...inputData, discord: { ...inputData.discord, channel: e.target.value } });
+    } else if (e.target.id === "lark_webhook") {
+      setInputData({ ...inputData, lark: { ...inputData.lark, webhook: e.target.value } });
     }
   };
 
@@ -83,6 +97,9 @@ const NotificationsPopup = ({ handleCloseDialog }: NotificationsPopupP) => {
     } else if (e.target.name === "discord") {
       setInputData({ ...inputData, discord: { ...inputData.discord, enabled: e.target.checked } });
       writeStoredData({ ...data, discord: { ...data.discord, enabled: e.target.checked } });
+    } else if (e.target.name === "lark") {
+      setInputData({ ...inputData, lark: { ...inputData.lark, enabled: e.target.checked } });
+      writeStoredData({ ...data, lark: { ...data.lark, enabled: e.target.checked } });
     }
   };
 
@@ -187,6 +204,27 @@ const NotificationsPopup = ({ handleCloseDialog }: NotificationsPopupP) => {
                       value={inputData.discord.enabled}
                     />
                   </Tab>
+                  <Tab
+                    className="tab"
+                    style={{
+                      borderColor: selectedIndex === 3 ? "#3254c5" : "#444444",
+                      opacity: selectedIndex === 3 ? "1" : "0.7",
+                    }}
+                  >
+                    <div
+                      id="editor_button"
+                      style={{
+                        color: inputData.lark.enabled ? "#36AE7C" : "#bdbdbd",
+                      }}
+                    >
+                      Lark
+                    </div>
+                    <ToggleBtn
+                      name="lark"
+                      onChangeHandler={handleToggleBtn}
+                      value={inputData.lark.enabled}
+                    />
+                  </Tab>
                 </>
               )}
             </Tab.List>
@@ -277,6 +315,29 @@ const NotificationsPopup = ({ handleCloseDialog }: NotificationsPopupP) => {
                       (inputData.discord.webhook === data.discord.webhook && inputData.discord.channel === data.discord.channel)
                     }
                     onClick={handleDiscordConfirm}
+                  >
+                    Confirm
+                    {isLoading ? <LoadingIcon /> : <ArrowRightIcon />}
+                  </button>
+                </div>
+              </Tab.Panel>
+              <Tab.Panel className="panel">
+                <input
+                  id="lark_webhook"
+                  type="text"
+                  placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+                  onChange={handleInput}
+                  value={inputData.lark.webhook}
+                />
+                <div>
+                  <button
+                    type="button"
+                    className="submit_button"
+                    disabled={
+                      inputData.lark.webhook === "" ||
+                      (inputData.lark.webhook === data.lark.webhook)
+                    }
+                    onClick={handleLarkConfirm}
                   >
                     Confirm
                     {isLoading ? <LoadingIcon /> : <ArrowRightIcon />}

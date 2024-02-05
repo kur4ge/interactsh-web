@@ -42,9 +42,9 @@ export const notifyDiscord = async (msg: any[], webhook: string) => {
     if (webhook.trim() !== '') {
         const chunkSize = 10;
         const chunkedData = msg.reduce((all,one,i) => {
-            const ch = Math.floor(i/chunkSize); 
+            const ch = Math.floor(i/chunkSize);
             // eslint-disable-next-line no-param-reassign
-            all[ch] = [].concat((all[ch]||[]),one); 
+            all[ch] = [].concat((all[ch]||[]),one);
             return all
         }, [])
         chunkedData.map(async (chunk: any) => {
@@ -52,6 +52,14 @@ export const notifyDiscord = async (msg: any[], webhook: string) => {
                 embeds: chunk.map((m: any) => ({"description": m.discord, "color":5298687}))
             }
             await fetch(`https://discordapp.com${new URL(webhook).pathname}`, {method: 'POST', body: JSON.stringify(params), headers: {"Content-Type": "application/json"}})
+        })
+    }
+}
+
+export const notifyLark = async (msg: any[], webhook: string) => {
+    if (webhook.trim() !== '') {
+        msg.forEach(async m => {
+            await fetch(webhook, {method: 'POST', body: m.lark, headers: {"Content-Type": "application/json"}})
         })
     }
 }
