@@ -16,7 +16,9 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16'
       - run : git config --global user.name github-actions
       - run : git config --global user.email github-actions@github.com
       - run : yarn install
